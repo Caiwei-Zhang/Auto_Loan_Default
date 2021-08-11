@@ -1,0 +1,15 @@
+Results for threshold =  0 
+	 GAIN :  0.6579957 +/- 0.005775122 
+	 SPLIT :  0.6568669 +/- 0.004171386 
+Results for threshold =  10 
+	 GAIN :  0.6541784 +/- 0.005280325 
+	 SPLIT :  0.6550094 +/- 0.003909244 
+Results for threshold =  20 
+	 GAIN :  0.6546824 +/- 0.005265497 
+	 SPLIT :  0.6534289 +/- 0.002032023 
+Results for threshold =  80 
+	 GAIN :  0.6542364 +/- 0.002323622 
+	 SPLIT :  0.6540915 +/- 0.00279804 
+Results for threshold =  90 
+	 GAIN :  0.6545054 +/- 0.003934747 
+	 SPLIT :  0.6534515 +/- 0.003111868 
