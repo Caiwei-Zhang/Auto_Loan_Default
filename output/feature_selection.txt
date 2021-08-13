@@ -1,43 +1,61 @@
 For threshold = 0 
- [1] "branch_id"                     "loan_to_asset_ratio"           "credit_score"                 
- [4] "disbursed_amount"              "credit_history"                "asset_cost"                   
- [7] "age"                           "credit_level"                  "area_id"                      
-[10] "enquirie_no"                   "total_sanction_loan"           "main_account_tenure"          
-[13] "outstanding_disburse_ratio"    "main_account_monthly_payment"  "manufacturer_id"              
-[16] "main_account_sanction_loan"    "average_age"                   "employment_type"              
-[19] "main_account_overdue_no"       "last_six_month_defaulted_no"   "total_monthly_payment"        
-[22] "total_outstanding_loan"        "main_account_outstanding_loan" "total_disbursed_loan"         
-[25] "main_account_disbursed_loan"   "total_overdue_no"              "active_to_inactive_act_ratio" 
-[28] "total_inactive_loan_no"        "sub_account_inactive_loan_no"  "total_account_loan_no"        
-[31] "main_account_loan_no"          "disburse_to_sactioned_ratio"   "main_account_inactive_loan_no"
-[34] "main_account_active_loan_no"   "last_six_month_new_loan_no"    "Driving_flag"                 
-[37] "sub_account_outstanding_loan"  "sub_account_loan_no"           "sub_account_tenure"           
-[40] "sub_account_sanction_loan"     "sub_account_monthly_payment"   "sub_account_disbursed_loan"   
-[43] "sub_account_active_loan_no"    "sub_account_overdue_no"       
+ [1] "loan_to_asset_ratio"          "disbursed_amount"             "asset_cost"                   "employee_code_id"            
+ [5] "age"                          "supplier_id"                  "credit_score"                 "credit_history"              
+ [9] "average_age"                  "outstanding_disburse_ratio"   "total_monthly_payment"        "total_account_tenure"        
+[13] "total_outstanding_loan"       "active_to_inactive_act_ratio" "total_sanction_loan"          "employment_type"             
+[17] "total_account_loan_no"        "total_inactive_loan_no"       "total_disbursed_loan"         "total_active_loan_no"        
+[21] "last_six_month_new_loan_no"   "enquirie_no"                  "last_six_month_defaulted_no"  "total_overdue_no"            
+[25] "disburse_to_sactioned_ratio"  "Driving_flag"                 "branch_id"                    "person_info_score"           
+[29] "credit_level"                 "area_id"                      "manufacturer_id"              "passport_flag"       
+        
 For threshold = 10 
- [1] "branch_id"                    "loan_to_asset_ratio"          "credit_score"                
- [4] "disbursed_amount"             "credit_history"               "asset_cost"                  
- [7] "age"                          "area_id"                      "enquirie_no"                 
-[10] "total_sanction_loan"          "manufacturer_id"              "employment_type"             
-[13] "main_account_overdue_no"      "last_six_month_defaulted_no"  "total_disbursed_loan"        
-[16] "total_overdue_no"             "total_inactive_loan_no"       "sub_account_inactive_loan_no"
+ [1] "loan_to_asset_ratio"          "disbursed_amount"             "asset_cost"                   "employee_code_id"            
+ [5] "age"                          "supplier_id"                  "credit_score"                 "credit_history"              
+ [9] "average_age"                  "total_monthly_payment"        "total_account_tenure"         "total_outstanding_loan"      
+[13] "active_to_inactive_act_ratio" "employment_type"              "total_account_loan_no"        "total_inactive_loan_no"      
+[17] "total_active_loan_no"         "last_six_month_new_loan_no"   "enquirie_no"                  "last_six_month_defaulted_no" 
+[21] "total_overdue_no"             "Driving_flag"                 "person_info_score"            "credit_level"                
+[25] "area_id"                      "manufacturer_id"              "passport_flag"  
+             
 For threshold = 20 
- [1] "branch_id"                   "loan_to_asset_ratio"         "credit_score"               
- [4] "disbursed_amount"            "credit_history"              "asset_cost"                 
- [7] "age"                         "area_id"                     "enquirie_no"                
-[10] "total_sanction_loan"         "manufacturer_id"             "employment_type"            
-[13] "main_account_overdue_no"     "last_six_month_defaulted_no" "total_disbursed_loan"       
-[16] "total_overdue_no"            "total_inactive_loan_no"     
+ [1] "loan_to_asset_ratio"          "disbursed_amount"             "asset_cost"                   "employee_code_id"            
+ [5] "age"                          "supplier_id"                  "credit_score"                 "credit_history"              
+ [9] "average_age"                  "total_monthly_payment"        "total_outstanding_loan"       "active_to_inactive_act_ratio"
+[13] "employment_type"              "total_account_loan_no"        "total_inactive_loan_no"       "total_active_loan_no"        
+[17] "last_six_month_new_loan_no"   "enquirie_no"                  "last_six_month_defaulted_no"  "Driving_flag"                
+[21] "person_info_score"            "credit_level"                 "area_id"                      "passport_flag"          
+     
+For threshold = 30 
+ [1] "loan_to_asset_ratio"          "asset_cost"                   "employee_code_id"             "age"                         
+ [5] "supplier_id"                  "credit_score"                 "average_age"                  "total_monthly_payment"       
+ [9] "active_to_inactive_act_ratio" "employment_type"              "total_account_loan_no"        "total_inactive_loan_no"      
+[13] "total_active_loan_no"         "last_six_month_new_loan_no"   "enquirie_no"                  "last_six_month_defaulted_no" 
+[17] "Driving_flag"                 "person_info_score"            "area_id"                      "passport_flag"     
+         
 For threshold = 40 
- [1] "branch_id"                   "loan_to_asset_ratio"         "credit_score"               
- [4] "disbursed_amount"            "credit_history"              "asset_cost"                 
- [7] "age"                         "area_id"                     "enquirie_no"                
-[10] "total_sanction_loan"         "manufacturer_id"             "employment_type"            
-[13] "main_account_overdue_no"     "last_six_month_defaulted_no" "total_overdue_no"           
-[16] "total_inactive_loan_no"     
+ [1] "loan_to_asset_ratio"          "asset_cost"                   "age"                          "supplier_id"                 
+ [5] "credit_score"                 "total_monthly_payment"        "active_to_inactive_act_ratio" "employment_type"             
+ [9] "total_active_loan_no"         "last_six_month_new_loan_no"   "last_six_month_defaulted_no"  "area_id"                     
+[13] "passport_flag"      
+         
+For threshold = 50 
+ [1] "loan_to_asset_ratio"          "asset_cost"                   "age"                          "supplier_id"                 
+ [5] "credit_score"                 "total_monthly_payment"        "active_to_inactive_act_ratio" "employment_type"             
+ [9] "total_active_loan_no"         "last_six_month_new_loan_no"   "last_six_month_defaulted_no"  "area_id"                     
+[13] "passport_flag"  
+            
+For threshold = 60 
+ [1] "loan_to_asset_ratio"          "asset_cost"                   "age"                          "supplier_id"                 
+ [5] "credit_score"                 "total_monthly_payment"        "active_to_inactive_act_ratio" "employment_type"             
+ [9] "total_active_loan_no"         "last_six_month_new_loan_no"   "last_six_month_defaulted_no" 
+
+For threshold = 70 
+[1] "loan_to_asset_ratio"         "age"                         "supplier_id"                 "total_monthly_payment"       "employment_type"            
+[6] "total_active_loan_no"        "last_six_month_defaulted_no"
+
+For threshold = 80 
+[1] "loan_to_asset_ratio"         "age"                         "supplier_id"                 "employment_type"             "total_active_loan_no"       
+[6] "last_six_month_defaulted_no"
+
 For threshold = 90 
- [1] "branch_id"                   "loan_to_asset_ratio"         "credit_score"               
- [4] "credit_history"              "age"                         "area_id"                    
- [7] "enquirie_no"                 "total_sanction_loan"         "manufacturer_id"            
-[10] "employment_type"             "main_account_overdue_no"     "last_six_month_defaulted_no"
-[13] "total_overdue_no"            "total_inactive_loan_no"     
+[1] "loan_to_asset_ratio"  "age"                  "supplier_id"          "employment_type"      "total_active_loan_no"

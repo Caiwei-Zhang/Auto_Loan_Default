@@ -40,8 +40,8 @@ first_layer <- function(method, x_train, y_train, x_valid = NULL, x_test, fold =
       oof_pred_valid <- predict(model, as.data.frame(cv_x_valid), type = "response")
       pred_test <- predict(model, x_test,  type = "response")
       
-      oof_f1_valid <- f1_score(y_pred = ifelse(oof_pred_valid > 0.25, 1, 0), y_true = cv_y_valid, 
-                               level_of_label = 2, pattern = "macro")[, 3]
+      oof_f1_valid <- f1_score(y_pred = ifelse(oof_pred_valid > 0.25, 1, 0), 
+                               y_true = cv_y_valid, pattern = "macro")$f1_macro
       
       if(!is.null(x_valid)) {
         pred_valid <- predict(model, x_valid,  type = "response")
@@ -67,8 +67,8 @@ first_layer <- function(method, x_train, y_train, x_valid = NULL, x_test, fold =
       oof_pred_valid <- predict(model, newdata = cv_dvalid)
       pred_test  <- predict(model, newdata = dtest) #, ntreelimit = model$best_ntreelimit
       
-      oof_f1_valid <- f1_score(y_pred = ifelse(oof_pred_valid > 0.25, 1, 0), y_true = cv_y_valid, 
-                               level_of_label = 2, pattern = "macro")[, 3]
+      oof_f1_valid <- f1_score(y_pred = ifelse(oof_pred_valid > 0.25, 1, 0), 
+                               y_true = cv_y_valid, pattern = "macro")$f1_macro
       
       if(!is.null(x_valid)) {
         dvalid  <- xgb.DMatrix(data = as.matrix(x_valid))
@@ -96,15 +96,14 @@ first_layer <- function(method, x_train, y_train, x_valid = NULL, x_test, fold =
       oof_pred_valid <- predict(model, data = as.matrix(cv_x_valid))
       pred_test  <- predict(model, data = as.matrix(x_test))
       
-      oof_f1_valid <- f1_score(y_pred = ifelse(oof_pred_valid > 0.25, 1, 0), y_true = cv_y_valid, 
-                               level_of_label = 2, pattern = "macro")[, 3]
+      oof_f1_valid <- f1_score(y_pred = ifelse(oof_pred_valid > 0.25, 1, 0), 
+                               y_true = cv_y_valid, pattern = "macro")$f1_macro
       
       if(!is.null(x_valid)) {
         pred_test  <- predict(model, data = as.matrix(x_valid))
       }
       
     }
-    
     
     oof_train_pred[cv_valid_idx] <- oof_pred_valid
     f1_cv <- cbind(f1_cv, oof_f1_valid)
@@ -168,10 +167,23 @@ colnames(x_train_stack) <- colnames(f1_cv_stack) <- colnames(x_test_stack) <- me
 # xgb_Meas <- f1_score(y_pred = ifelse(x_valid_stack[, 2] > 0.25, 1, 0), y_true = y_valid, level_of_label = 2, pattern = "macro")
 # lgb_Meas <- f1_score(y_pred = ifelse(x_valid_stack[, 3] > 0.25, 1, 0), y_true = y_valid, level_of_label = 2, pattern = "macro")
 
-train_stack_label <- sapply(1:3, function(c) {x_train_stack[, c] <- ifelse(x_train_stack[, c] > 0.25, 1, 0)})
-# valid_stack_label <- sapply(1:3, function(c) {x_valid_stack[, c] <- ifelse(x_valid_stack[, c] > 0.25, 1, 0)})
-test_stack_label  <- sapply(1:3, function(c) {x_test_stack[, c] <- ifelse(x_test_stack[, c] > 0.25, 1, 0)})
+thr_search <- NULL
+for (thr in seq(0.235, 0.25, 0.05)) {
+  
+  gbm_Meas <- f1_score(y_pred = ifelse(x_valid_stack[, 1] > thr, 1, 0), y_true = y_valid, level_of_label = 2, pattern = "macro")$f1_macro
+  xgb_Meas <- f1_score(y_pred = ifelse(x_valid_stack[, 2] > thr, 1, 0), y_true = y_valid, level_of_label = 2, pattern = "macro")$f1_macro
+  lgb_Meas <- f1_score(y_pred = ifelse(x_valid_stack[, 3] > thr, 1, 0), y_true = y_valid, level_of_label = 2, pattern = "macro")$f1_macro
+  
+  thr_search <- cbind(thr_search, c(gbm_Meas, xgb_Meas, lgb_Meas))
+}
 
+thr <- list(gbm_thr = seq(0.235, 0.25, 0.05)[which.max(thr_search[1, ])],
+            xgb_thr = seq(0.235, 0.25, 0.05)[which.max(thr_search[2, ])],
+            lgb_thr = seq(0.235, 0.25, 0.05)[which.max(thr_search[3, ])])
+
+train_stack_label <- sapply(1:3, function(c) {x_train_stack[, c] <- ifelse(x_train_stack[, c] > thr[[c]], 1, 0)})
+valid_stack_label <- sapply(1:3, function(c) {x_valid_stack[, c] <- ifelse(x_valid_stack[, c] > thr[[c]], 1, 0)})
+test_stack_label  <- sapply(1:3, function(c) {x_test_stack[, c] <- ifelse(x_test_stack[, c] > thr[[c]], 1, 0)})
 
 
 

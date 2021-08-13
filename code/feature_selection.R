@@ -128,7 +128,6 @@ score_feature_selection <- function(data, target, train_features, cate_features,
   
     last <- c(clf$evaluation_log[nrow(clf$evaluation_log), "test_auc_mean"], 
               clf$evaluation_log[nrow(clf$evaluation_log), "test_auc_std"])
-  
   }
 
   return(last)
@@ -160,131 +159,13 @@ display_distributions <- function(act_imp_df, null_imp, feature) {
 
 
 
-#########################################################################################
-################################### feature selection ###################################
-#########################################################################################
-cate_feature <- car_train %>% select(-customer_id) %>% 
-  select(contains(c("_id", "_flag", "_type", "credit_history", "credit_level"))) %>% colnames()
-
-iterations <- 50
-
-# Step 1: get two version of feature importance 
-act_imp_df <- shf_imp_df <- NULL
-
-for (iter in 1:iterations) {
-  temp_act <- get_feature_importance(data = car_train %>% select(-customer_id), 
-                                     label = "loan_default", 
-                                     cate_feature = cate_feature, 
-                                     shuffle = FALSE, seed = 311)
-  temp_shf <- get_feature_importance(data = car_train %>% select(-customer_id), 
-                                     label = "loan_default", 
-                                     cate_feature = cate_feature, 
-                                     shuffle = TRUE, seed = 233)
-  
-  temp_act$run <- iter
-  temp_shf$run <- iter
-  
-  act_imp_df <- rbind(act_imp_df, temp_act)
-  shf_imp_df <- rbind(shf_imp_df, temp_shf)
-  
-  cat("Done with", iter, "of", iterations, "\n")
-  
-}
 
 
-# calculate the score
-feature_score <- get_score(act_imp = act_imp_df, null_imp = shf_imp_df, pattern = "feature_score")
-corr_score <- get_score(act_imp = act_imp_df, null_imp = shf_imp_df, pattern = "corr_score")
+# 
+# # Visualization 
+# total_inact_loan <- display_distributions(act_imp = act_imp_df, null_imp = shf_imp_df, feature = "total_inactive_loan_no")
+# ggarrange(total_inact_loan[[1]], total_inact_loan[[2]], ncol = 2, nrow = 1)
+# 
+#  
 
 
-
-sink(file = "E:/Competition/xf/output/thrs_fs_eval.txt")
-for (threshold in c(0, 10, 20, 80, 90)) {
-  
-  gain_feas     <- unique(corr_score$feature[corr_score$gain_score >= threshold])
-  gain_cat_feas <- unique(corr_score$feature[corr_score$gain_score >= threshold & 
-                                               corr_score$feature %in% cate_feature])
-  
-  freq_feas     <- unique(corr_score$feature[corr_score$freq_score >= threshold])
-  freq_cat_feas <- unique(corr_score$feature[corr_score$freq_score >= threshold & 
-                                               corr_score$feature %in% cate_feature])
-  
-  cat("Results for threshold = ", threshold, "\n")
-  gain_results <- score_feature_selection(data = car_train, target = car_train[["loan_default"]], 
-                                          train_features = gain_feas, cate_features = gain_cat_feas, 
-                                          method = "lgb")
-  cat("\t GAIN : ", gain_results[1], "+/-", gain_results[2], "\n")
-  
-  
-  freq_results <- score_feature_selection(data = car_train, target = car_train[["loan_default"]], 
-                                          train_features = freq_feas, cate_features = freq_cat_feas,
-                                          method = "lgb")
-  cat("\t SPLIT : ", freq_results[1], "+/-", freq_results[2], "\n")
-  
-}
-
-sink()
-
-
-threshold <- 0
-freq_feas_0     <- unique(corr_score$feature[corr_score$freq_score > threshold])
-freq_cat_feas_0 <- unique(corr_score$feature[corr_score$freq_score > threshold & 
-                                                corr_score$feature %in% cate_feature])
-
-sink(file = "E:/Competition/xf/output/feature_selection.txt")
-for (threshold in c(0, 10, 20, 40, 90)) {
-  cat("For threshold =", threshold, "\n")
-  print(unique(corr_score$feature[corr_score$freq_score >= threshold]))
-}
-sink()
-
-
-# Visualization 
-total_inact_loan <- display_distributions(act_imp = act_imp_df, null_imp = shf_imp_df, feature = "total_inactive_loan_no")
-ggarrange(total_inact_loan[[1]], total_inact_loan[[2]], ncol = 2, nrow = 1)
-
- 
-
-
-# The Way 1.0 to calculate score (non-functional)
-{ 
-  # # Method 1: score = 未shuffle的特征重?????? / shuffle特征重要型的75%分位???
-  # feature_score <- NULL
-  # 
-  # for (fea in act_imp_df$Feature) {
-  #   gain_f_act_imp <- mean(act_imp_df$Gain[act_imp_df$Feature == fea])
-  #   gain_f_shf_imp <- shf_imp_df$Gain[shf_imp_df$Feature == fea]
-  #   
-  #   freq_f_act_imp <- mean(act_imp_df$Frequency[act_imp_df$Feature == fea])
-  #   freq_f_shf_imp <- shf_imp_df$Frequency[shf_imp_df$Feature == fea]
-  #   
-  #   gain_score <- log(1 + gain_f_act_imp / (1 + as.numeric(quantile(gain_f_shf_imp, 0.75))))
-  #   freq_score <- log(1 + freq_f_act_imp / (1 + as.numeric(quantile(freq_f_shf_imp, 0.75))))
-  # 
-  #   feature_score <- append(feature_score, c(fea, gain_score, freq_score))
-  # }
-  # 
-  # score_df <- as.data.frame(matrix(feature_score, length(act_imp_df$Feature), 3, byrow = TRUE))
-  # colnames(score_df) <- c("feature", "gain_score", "freq_score")
-  # 
-  # 
-  # 
-  # # Method 2: shuffle之后特征重要性低于实际target对应特征重要???25%分位数的次数，所占百分比
-  # correlation_score <- NULL
-  # for (fea in act_imp_df$Feature) {
-  #   
-  #   gain_f_act_imp <- act_imp_df$Gain[act_imp_df$Feature == fea]
-  #   gain_f_shf_imp <- shf_imp_df$Gain[shf_imp_df$Feature == fea]
-  #   gain_score <- 100 * sum(gain_f_shf_imp < quantile(gain_f_act_imp, 0.25)) / length(gain_f_act_imp)
-  #   
-  #   freq_f_act_imp <- act_imp_df$Frequency[act_imp_df$Feature == fea]
-  #   freq_f_shf_imp <- shf_imp_df$Frequency[shf_imp_df$Feature == fea]
-  #   freq_score <- 100 * sum(freq_f_shf_imp < quantile(freq_f_act_imp, 0.25)) / length(freq_f_act_imp)
-  #  
-  # 
-  #   correlation_score <- append(correlation_score, c(fea, gain_score, freq_score)) 
-  # }
-  
-  # score_df_corr <- as.data.frame(matrix(correlation_score, length(act_imp_df$Feature), 3, byrow = TRUE))
-  # colnames(score_df_corr) <- c("feature", "gain_score", "freq_score")
-}

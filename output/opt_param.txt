@@ -1,0 +1,44 @@
+************************  car_train全部作为训练集  **********************
+param <- list(objective = "binary", boosting = "gbdt", 
+              learning_rate = 0.005, 
+              feature_fraction = 0.7, bagging_fraction = 0.9, 
+              bagging_freq = 5, max_depth = 8, num_leaves = 20, 
+              min_child_weight = 3)
+
+opt.clf <- lgb.train(data = dtrain, params = param, 
+                     nrounds = 3000, categorical_feature = cate_feas, 
+                     verbose = -1, force_row_wise = TRUE)
+
+threshold = 0.253
+> Meas_valid
+$df
+  precision    recall
+0 0.8691439 0.8590560
+1 0.3847653 0.4052995
+
+$f1_macro
+[1] 0.629418
+
+
+or
+
+param <- list(objective = "binary", boosting = "gbdt", 
+              learning_rate = 0.01, 
+              feature_fraction = 0.7, bagging_fraction = 0.9, 
+              bagging_freq = 5, max_depth = 8, num_leaves = 20, 
+              min_child_weight = 3)
+
+opt.clf <- lgb.train(data = dtrain, params = param, 
+                     nrounds = 1000, categorical_feature = cate_feas, 
+                     verbose = -1, force_row_wise = TRUE)
+
+
+> f1_score(y_pred = ifelse(pred_valid > 0.243, 1, 0), y_true = y_valid, 
++          level_of_label = 2, pattern = "macro") #
+$df
+  precision    recall
+0 0.8691530 0.8370196
+1 0.3594896 0.4206009
+
+$f1_macro
+[1] 0.6202176
